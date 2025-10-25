@@ -52,61 +52,68 @@ threat_notification = disabled`,
     id: 2,
     title: "Scenario 2",
     systemLog: [
-      "[21/10/2025 07:58:00] BACKUP SERVICE STARTED",
-      "[21/10/2025 08:00:00] ANTIVIRUS ALERT – Database outdated (last update: 10 days ago)",
-      "[21/10/2025 08:01:22] TEMP FILE DELETED – /temp/cache.tmp",
-      "[21/10/2025 08:02:12] FILE SCANNED – infected_file.exe → No threat detected",
-      "[21/10/2025 08:03:00] USER LOGIN – AdminUser",
-      "[21/10/2025 08:03:11] NETWORK LATENCY SPIKE – 700ms",
-      "[21/10/2025 08:05:32] SYSTEM INFECTED – malware_activity_detected",
-      "[21/10/2025 08:06:00] AUTO CLEANUP – skipped",
-      "[21/10/2025 08:07:20] SECURITY PATCH UPDATE – pending",
-      "[21/10/2025 08:08:30] DISK SPACE CHECK – OK",
-      "[21/10/2025 08:09:50] FIREWALL CHECK – success"
+      "On Terminal A – HR Manager’s System",
+      "[26/10/2025 12:22:44] LOGIN SUCCESS – user: hr_manager",
+      "[26/10/2025 12:24:10] EMAIL SENT – Subject: “Staff Salary Update” – Attachments: payroll.xlsm",
+
+      "On Mail Server",
+      "[26/10/2025 12:24:10] EMAIL SENT – Subject: “Staff Salary Update” – Attachments: payroll.xlsm",
+      "[26/10/2025 12:29:41] EMAIL SENT – Subject: “Payroll Correction” – Attachments: payroll_v2.xlsm",
+
+      "On Terminal B – Recipient’s (Victim’s) System",
+      "[26/10/2025 12:25:03] OUTGOING CONNECTION – IP: 102.77.13.9",
+      "[26/10/2025 12:27:14] ANTIVIRUS ALERT – Macro execution blocked in payroll.xlsm",
+
+      "On Terminal B again (Malware Activity)",
+      "[26/10/2025 12:29:41] EMAIL SENT – Subject: “Payroll Correction” – Attachments: payroll_v2.xlsm"
     ],
-    configFile: `auto_update = off
-scan_frequency = weekly
-threat_notification = disabled
-firewall_status = enabled
-backup_schedule = hourly
-temp_cleanup = on
-system_patch_mode = manual
-log_retention = extended
-network_latency_threshold = 600ms`,
+    configFile: `Terminal A
+// /etc/mail/security.conf
+attachment_scanning = partial
+macro_filtering = disabled
+outbound_firewall = off
+auto_forward = enabled
+
+Terminal B
+// /etc/mail/security.conf
+attachment_scanning = partial
+macro_filtering = disabled
+outbound_firewall = off
+auto_forward = enabled`,
     questions: [
       {
         id: 1,
         text: "What suspicious thing happened?",
         marks: 5,
-        answer: "A user created and ran a fake 'update' file that caused a system error.",
+        answer: "A malicious Excel file (payroll.xlsm) with macros was sent from HR’s system, and after the recipient opened it, a new infected email (payroll_v2.xlsm) was sent automatically — indicating the macro executed malware.",
         criteria: [
-          "Identified malicious file creation",
-          "Recognized unauthorized execution",
-          "Noted the system error result"
+          "Identified the malicious macro file",
+          "Recognized automatic email propagation",
+          "Linked macro execution to malware spread"
         ]
       },
       {
         id: 2,
         text: "Which settings made it possible?",
         marks: 10,
-        answer: "Software installation was allowed, file verification was off, and no admin approval was needed.",
+        answer: "Macro filtering was disabled, attachment scanning was only partial, and outbound firewall was off — allowing the macro to execute and send emails automatically.",
         criteria: [
-          "Identified software_install = enabled",
-          "Noted file_verification = off",
-          "Mentioned admin_approval_required = false",
-          "Explained security gaps"
+          "Identified macro_filtering = disabled",
+          "Noted attachment_scanning = partial",
+          "Mentioned outbound_firewall = off",
+          "Explained how these allowed infection spread"
         ]
       },
       {
         id: 3,
         text: "How can the IT team prevent this?",
         marks: 10,
-        answer: "Require admin approval for installations, enable file verification, and restrict executable file creation.",
+        answer: "Enable macro filtering, enforce full attachment scanning, turn on outbound firewall, and disable automatic email forwarding to prevent malware propagation through macros.",
         criteria: [
-          "Recommended admin approval requirement",
-          "Suggested enabling file verification",
-          "Mentioned restricting executable creation",
-          "Provided comprehensive prevention plan"
+          "Recommended enabling macro filtering",
+          "Suggested full attachment scanning",
+          "Mentioned enabling outbound firewall",
+          "Provided complete mitigation strategy"
         ]
       }
     ]
