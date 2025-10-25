@@ -3,13 +3,13 @@ export const scenarios = [
     id: 1,
     title: "Scenario 1",
     systemLog: [
-      "[20/10/2025 10:05:05] LOGIN FAILED – user: admin (wrong password)",
-      "[20/10/2025 10:05:07] LOGIN FAILED – user: admin (wrong password)",
-      "[20/10/2025 10:05:10] LOGIN SUCCESS – user: admin"
+      "[20/10/2025 08:00:00] ANTIVIRUS ALERT – Database outdated (last update: 10 days ago)",
+      "[20/10/2025 08:15:20] FILE SCANNED – infected_file.exe → No threat detected",
+      "[20/10/2025 08:16:05] SYSTEM INFECTED – malware_activity_detected"
     ],
-    configFile: `password = admin123
-failed_login_limit = 10
-two_factor_auth = off`,
+    configFile: `auto_update = off
+scan_frequency = weekly
+threat_notification = disabled`,
     questions: [
       {
         id: 1,
@@ -52,14 +52,27 @@ two_factor_auth = off`,
     id: 2,
     title: "Scenario 2",
     systemLog: [
-      "[24/10/2025 10:12:44] LOGIN SUCCESS – user: techsupport",
-      "[24/10/2025 10:13:25] FILE CREATED – /system/patch_update.exe",
-      "[24/10/2025 10:14:05] FILE EXECUTED – /system/patch_update.exe",
-      "[24/10/2025 10:14:45] SYSTEM ERROR – unauthorized access detected"
+      "[21/10/2025 07:58:00] BACKUP SERVICE STARTED",
+      "[21/10/2025 08:00:00] ANTIVIRUS ALERT – Database outdated (last update: 10 days ago)",
+      "[21/10/2025 08:01:22] TEMP FILE DELETED – /temp/cache.tmp",
+      "[21/10/2025 08:02:12] FILE SCANNED – infected_file.exe → No threat detected",
+      "[21/10/2025 08:03:00] USER LOGIN – AdminUser",
+      "[21/10/2025 08:03:11] NETWORK LATENCY SPIKE – 700ms",
+      "[21/10/2025 08:05:32] SYSTEM INFECTED – malware_activity_detected",
+      "[21/10/2025 08:06:00] AUTO CLEANUP – skipped",
+      "[21/10/2025 08:07:20] SECURITY PATCH UPDATE – pending",
+      "[21/10/2025 08:08:30] DISK SPACE CHECK – OK",
+      "[21/10/2025 08:09:50] FIREWALL CHECK – success"
     ],
-    configFile: `software_install = enabled
-file_verification = off
-admin_approval_required = false`,
+    configFile: `auto_update = off
+scan_frequency = weekly
+threat_notification = disabled
+firewall_status = enabled
+backup_schedule = hourly
+temp_cleanup = on
+system_patch_mode = manual
+log_retention = extended
+network_latency_threshold = 600ms`,
     questions: [
       {
         id: 1,
